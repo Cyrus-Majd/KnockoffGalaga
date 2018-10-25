@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html>
+<style>
+    #container {
+    width: 400px;
+    height: 400px;
+    position: relative;
+    background: black;
+    }
+    #motherShip {
+    width: 70px;
+    height: 70px;
+    position: absolute;
+    /* background-color: purple; */
+    }
+    #shootOne {
+    width: 70px;
+    height: 70px;
+    position: absolute;
+    /* background-color: yellow; */
+    }
+    #shootTwo {
+    width: 40px;
+    height: 40px;
+    position: absolute;
+    /* background-color: blue; */
+    }
+    #shootThree {
+    width: 20px;
+    height: 20px;
+    position: absolute;
+    /* background-color: brown; */
+    }
+    #enemy {
+    width: 70px;
+    height: 70px;
+    position: absolute;
+    /* background-color: blue; */
+    }
+</style>
+<body>
+
+<p>
+    <button onclick="moveMotherShip()">"Move Mother Ship"</button>
+    <button onclick="moveEnemy()">"Spawn Enemy"</button><br />
+    <button onclick="shootYellowBullet()">"Shoot Yellow Bullet"</button>
+    <button onclick="shootBlueBullet()">"Shoot Blue Bullet"</button>
+    <button onclick="shootBrownBullet()">"Shoot Brown Bullet"</button><br />
+</p>
+
+<div id ="reasonOfImpact"></div>
+<div id ="display"><h4>Enemy Health: 100</h4></div>
+
+<div id ="container">
+  <div id ="motherShip"> <img src="motherShip.png" style="width:70px;height:70px;">  </div>
+  <div id ="shootOne"> <img src="shootOne.png" style="width:70px;height:70px;">  </div>
+  <div id ="shootTwo"> <img src="shootTwoMissile.png" style="width:40px;height:40px;">  </div>
+  <div id ="shootThree"> <img src="shootThreeWhite.png" style="width:20px;height:20px;">  </div>
+  <div id ="enemy"> <img src="enemyShip.webp" style="width:70px;height:70px;">  </div>
+</div>
+
+<script>
+
+var motherShipHorizontalPosition;
+var enemyHorizontalPosition;
+var yellowShootVeticalPosition;
+var blueShootVeticalPosition;
+var brownShootVeticalPosition;
+// var yellowShootHorizontalPosition;
+// var blueShootHorizontalPosition;
+// var blueShootHorizontalPosition;
+
+//Variables for the Health Bar:
+var enemyHealth = 100;
+
+
+function shootYellowBullet() {
+  shootOne();
+}
+function shootBlueBullet() {
+  shootTwo();
+}
+function shootBrownBullet() {
+  shootThree();
+}
+
+// This function listens to the left and right arrow key
+// This is not used in the code for now. We can activate it in future.
+document.onkeydown = checkKey;
+function checkKey(e) {
+    e = e || window.event;
+    if (e.keyCode == '37') {
+       // left arrow
+    }
+    else if (e.keyCode == '39') {
+       // right arrow
+    }
+}
+
+// moveMotherShip() function moves the motherShip object. 
+// The motherShipHorizontalPosition is the motherShip's x-coordinate
+function moveMotherShip() {
+  var motherShipElement = document.getElementById("motherShip");  
+  // let randomSpeedOfMothership = 10; 
+  let motion = "negative";
+  motherShipHorizontalPosition = 350;
+  motherShipElement.style.top = 0 + 'px';
+  var id = setInterval(frame, 10);
+  
+  function frame() {
+    if (motherShipHorizontalPosition == 350 || motion == "negative") {
+        motherShipHorizontalPosition--;
+        motherShipElement.style.left = motherShipHorizontalPosition + 'px';
+      if (motherShipHorizontalPosition == 0){motion = "positive";};
+    }
+
+    if (motherShipHorizontalPosition == 0 || motion == "positive") {
+      //clearInterval(id);
+      motherShipHorizontalPosition++;
+      motherShipElement.style.left = motherShipHorizontalPosition + 'px';
+      if (motherShipHorizontalPosition == 350){motion = "negative";};
+    
+    }
+  }
+}
+
+function moveEnemy() {
+  var enemyElement = document.getElementById("enemy");
+  let randomSpeedOfEnemy = 10;
+  let motion = "negative";
+  enemyHorizontalPosition = 350;
+  enemyElement.style.top = enemyHorizontalPosition + 'px';
+
+  randomSpeedOfEnemy = Math.floor(Math.random()*20);
+  var id = setInterval(frame, randomSpeedOfEnemy);
+
+  function frame() {
+    
+    if (enemyHorizontalPosition == 350 || motion == "negative") {
+      enemyHorizontalPosition--;
+      enemyElement.style.left = enemyHorizontalPosition + 'px';
+      if (enemyHorizontalPosition == 0){motion = "positive";};
+    }
+
+    if (enemyHorizontalPosition == 0 || motion == "positive") {
+      //clearInterval(id);
+      enemyHorizontalPosition++;
+      enemyElement.style.left = enemyHorizontalPosition + 'px';
+      if (enemyHorizontalPosition == 350){motion = "negative";};
+    } 
+  }
+}
+
+function shootOne() {
+  var motherShipElement = document.getElementById("motherShip");
+  var enemyElement = document.getElementById("enemy");
+  var shootOneElement = document.getElementById("shootOne");
+  let displayElement = document.getElementById("display");
+  let reasonOfImpactElement = document.getElementById("reasonOfImpact");
+
+  yellowShootVeticalPosition = 75;
+  var id = setInterval(frame, 1);
+  
+  shootOneElement.style.left = motherShipElement.style.left;
+  shootOneElement.style.top = motherShipElement.style.top;
+
+  //makes the bullet go down
+  function frame() {
+    if (yellowShootVeticalPosition == 475) {
+      clearInterval(id);
+    } else {
+      yellowShootVeticalPosition++;
+      if ((Math.abs(shootOneElement.style.top.split("p")[0] - enemyElement.style.top.split("p")[0]) < 20) &&
+          (Math.abs(shootOneElement.style.left.split("p")[0] - enemyElement.style.left.split("p")[0]) < 50)) {
+        // window.alert("Enemy Ship Impacted (Easy Missile)");   // getEmementById of aa div and change the innerHTML
+        reasonOfImpactElement.innerHTML = "<p>Enemy Ship Impacted by a SpaceBlazer</P>";
+        enemyHealth = enemyHealth - 5;
+        displayElement.innerHTML = "<h4>Enemy Health: " + enemyHealth + " points</h4>";
+        if (enemyHealth <= 0){
+          // window.alert("Game Over. You Win! (missile 1)");
+          window.alert("Game Over. You Win! (last missile used was a SpaceBlazer)");
+          yellowShootVeticalPosition = 475;
+        } else {
+        yellowShootVeticalPosition = 475;
+      }} else {
+      //no good
+      }
+      shootOneElement.style.top = yellowShootVeticalPosition + 'px';
+    }
+  }
+}
+
+function shootTwo() {
+  var motherShipElement = document.getElementById("motherShip");
+  var enemyElement = document.getElementById("enemy");
+  var shootTwoElement = document.getElementById("shootTwo");
+  let displayElement = document.getElementById("display");
+  let reasonOfImpactElement = document.getElementById("reasonOfImpact");
+
+  blueShootVeticalPosition = 75;
+  var id = setInterval(frame, 10);
+
+  shootTwoElement.style.left = motherShipElement.style.left;    //makes the bullet leave at the x pos of the ship
+  shootTwoElement.style.top = motherShipElement.style.top;
+
+  //makes the bullet go down
+  function frame() {
+    if (blueShootVeticalPosition == 475) {
+      clearInterval(id);
+    } else {
+        blueShootVeticalPosition++;
+        if ((Math.abs(shootTwoElement.style.top.split("p")[0] - enemyElement.style.top.split("p")[0]) < 20) &&
+            (Math.abs(shootTwoElement.style.left.split("p")[0] - enemyElement.style.left.split("p")[0]) < 50)) {
+        //window.alert("Enemy Ship Impacted (Harder Missile)");
+        reasonOfImpactElement.innerHTML = "<p>Enemy Ship Impacted by a ShipBuster</P>";
+        enemyHealth = enemyHealth - 10;
+        displayElement.innerHTML = "<h4>Enemy Health: " + enemyHealth + " points</h4>";
+        if (enemyHealth <= 0){
+          // window.alert("Game Over. You win! (missle 2)");
+          window.alert("Game Over. You Win! (last missile used was a ShipBuster)");
+          blueShootVeticalPosition = 475;
+        } else {
+        blueShootVeticalPosition = 475;
+        }} else {
+        //no good
+        }
+        shootTwoElement.style.top = blueShootVeticalPosition + 'px';
+    }
+  }
+}
+
+function shootThree() {
+  var motherShipElement = document.getElementById("motherShip");
+  var enemyElement = document.getElementById("enemy");
+  var shootThreeElement = document.getElementById("shootThree");
+  let displayElement = document.getElementById("display");
+  let reasonOfImpactElement = document.getElementById("reasonOfImpact");
+
+  brownShootVerticalPosition = 75;
+  var id = setInterval(frame, 20);
+
+  shootThreeElement.style.left = motherShipElement.style.left;  //makes the bullet leave at the x pos of the ship
+  shootThreeElement.style.top = motherShipElement.style.top;
+
+  //makes the bullet go down
+  function frame() {
+    if (brownShootVerticalPosition == 475) {
+      clearInterval(id);
+    } else {
+      brownShootVerticalPosition++;
+      if ((Math.abs(shootThreeElement.style.top.split("p")[0] - enemyElement.style.top.split("p")[0]) < 5) &&
+          (Math.abs(shootThreeElement.style.left.split("p")[0] - enemyElement.style.left.split("p")[0]) < 50)) {
+        // window.alert("Enemy Ship Impacted (bomb)");
+        reasonOfImpactElement.innerHTML = "<p>Enemy Ship Impacted by a StarDestroyer bomb</P>";
+        enemyHealth = enemyHealth - 25;
+        displayElement.innerHTML = "<h4>Enemy Health: " + enemyHealth + " points</h4>";
+        if (enemyHealth <= 0){
+          window.alert("Game Over. You win! (last missile used was a StarDestroyer)");
+          blueShootVeticalPosition = 475;
+        } else {
+        brownShootVeticalPosition = 475;
+      }} else {
+      //no good
+      }
+      shootThreeElement.style.top = brownShootVerticalPosition + 'px'; 
+    }
+  }
+}
+
+</script>
+
+</body>
+</html>
